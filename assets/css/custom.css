@@ -1,0 +1,68 @@
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+.navbar-expand-lg {
+  background-color: rgb(79, 114, 163);
+}
+
+.navbar-brand {
+  font-family: 'Pacifico', cursive;
+}
+
+.myslide {
+  height: 500px;
+  overflow: hidden;
+}
+
+.myslide img {
+  max-height: 500px;
+}
+
+.navbar-fixed {
+  height: 56px;
+  position: relative;
+}
+
+.carousel-caption {
+  text-shadow: 1px 1px rgba(0, 0, 0, .5);
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+#about {
+  background-color: #fff;
+}
+
+.carousel-caption {
+  bottom: unset;
+  top: 10rem;
+}
+
+#books_container {
+  min-height: 550px;
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+}
+
+footer {
+  background-color: rgb(79, 114, 163);
+}
+
+.btn-primary,
+.bg-primary {
+  background-color: rgb(79, 114, 163) !important;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: rgb(69, 100, 143);
+}
+
+.btn-primary:active {
+  background-color: rgb(62, 90, 129) !important;
+}
