@@ -66,3 +66,12 @@ footer {
 .btn-primary:active {
   background-color: rgb(62, 90, 129) !important;
 }
+
+.details {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.hoverable:hover {
+  cursor: pointer;
+}

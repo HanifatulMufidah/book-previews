@@ -1,3 +1,44 @@
+<?php
+session_start();
+
+require_once 'connection.php';
+$name = '';
+$email = '';
+$username = '';
+$password = '';
+$password_repeat = '';
+
+if (isset($_POST['submit'])) {
+    $name = htmlspecialchars(trim($_POST['name']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $username = htmlspecialchars(trim($_POST['username']));
+    $password = htmlspecialchars(trim($_POST['password']));
+    $password_repeat = htmlspecialchars(trim($_POST['password_repeat']));
+
+    if ($password == $password_repeat) {
+
+        mysqli_query($conn, "SELECT * FROM user WHERE username = '$username' OR email = '$email'");
+        if (!mysqli_affected_rows($conn) > 0) {
+
+            $password_hashed = password_hash($password, PASSWORD_DEFAULT);
+            mysqli_query($conn, "INSERT INTO user VALUES(NULL, '$name', '$email', '$username', '$password_hashed') ");
+
+            $_SESSION['msg'] = "You have just registered, please login";
+            header("location:login.php");
+        } else {
+            $err = "The email or username is already registered";
+        }
+    } else {
+        $err = "Make sure to confirm your password";
+    }
+}
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,18 +81,31 @@
                     <div class="card-body">
                         <h3 class="text-center">Register</h3>
                         <hr>
-                        <form action="POST">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control mb-3" id="email" name="email">
-                            <label for="nama">Nama</label>
-                            <input type="text" class="form-control mb-3" id="nama" name="nama">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control mb-3" id="username" name="username">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                            <div class="d-grid gap-2 mt-3">
-                                <input class="btn btn-primary" type="submit" value="submit">
+                        <?php
+                        if (isset($err)) {
+                        ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?= $err; ?>
                             </div>
+                        <?php
+                        }
+
+                        ?>
+                        <form method="POST">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control mb-3" id="name" name="name" value="<?= $name; ?>" required>
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control mb-3" id="email" name="email" value="<?= $email; ?>" required>
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control mb-3" id="username" name="username" value="<?= $username; ?>" required>
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control mb-3" id="password" name="password" value="<?= $password; ?>" required>
+                            <label for="password_repeat">Confirm your password</label>
+                            <input type="password" class="form-control mb-3" id="password_repeat" name="password_repeat" value="<?= $password_repeat; ?>" required>
+                            <div class="d-grid gap-2 mb-3">
+                                <input class="btn btn-primary" type="submit" value="submit" name="submit">
+                            </div>
+                            <p>Already have an account? <a href="login.php">Login</a></p>
                         </form>
                     </div>
                 </div>

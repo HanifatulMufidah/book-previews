@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,7 +44,26 @@
             <a class="nav-link" href="#about">About</a>
             <a class="nav-link" href="#collections">Collections</a>
             <a class="nav-link" href="reader.php">Reader</a>
-            <a class="nav-link" href="login.php">Login</a>
+
+            <?php
+            if (isset($_SESSION['username'])) {
+            ?>
+              <div class="dropdown">
+                <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <?= $_SESSION['username']; ?>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                </ul>
+              </div>
+            <?php
+            } else {
+            ?>
+              <a class="nav-link" href="login.php">Login</a>
+            <?php
+            }
+            ?>
+
           </div>
         </div>
       </div>
@@ -135,26 +158,41 @@
   </section>
 
   <!-- Modal -->
-  <div class="modal fade" id="preview" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal fade" id="preview" data-bs-focus="false">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5">Preview</h1>
-          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body bg-light">
           <div class="row">
-            <div class="col-4">
-              <img id="img_preview" src="./assets/img/atomic.jpg" alt="" class="img-fluid">
+            <div class="col-4 col-lg-2">
+              <img id="img_preview" src="./assets/img/atomic.jpg" alt="" class="img-fluid img-thumbnail mb-3">
             </div>
-            <div class="col-8">
+            <div class="col-8 col-lg-10">
+              <div class="details alert alert-primary mb-3"></div>
+            </div>
+            <div class="col-12">
+              <div class="comments">
+                <hr>
+                <h3>Comments</h3>
+                <div class="list-group">
 
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Add Comment</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div class="modal-footer" style="display: block;">
+          <form action="" method="POST" id="form_comment">
+            <div class="input-group">
+              <input type="hidden" id="username" name="username" value="<?= isset($_SESSION['username']) ? $_SESSION['username'] : 'Anonymous'; ?>">
+              <input type="hidden" id="id_book" name="id_book">
+              <input type="text" name="body" class="form-control" placeholder="Add Comment...">
+              <button class="btn btn-primary">Send</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -170,6 +208,7 @@
 
   <!-- JavaScript -->
   <script src="./assets/js/bootstrap.bundle.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="./assets/js/buku.js"></script>
 </body>
 

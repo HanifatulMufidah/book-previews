@@ -1,19 +1,34 @@
 <?php
+session_start();
+require_once 'connection.php';
 
-if (isset($_POST["login"])) {
-    $username = $_POST["username"];
+$username = '';
+$password = '';
 
-    session_start();
-    $_SESSION["username"] = "username";
-    $_SESSION["password"] = "password";
+if (isset($_SESSION['username'])) {
+    header("location:index.php");
+}
 
-    echo "
-    <script>
-        alert('Login berhasil')
-        location.href = 'index.php';
-    </script>
-    ";
-};
+if (isset($_POST['submit'])) {
+
+    $username = htmlspecialchars(trim($_POST['username']));
+    $password = htmlspecialchars(trim($_POST['password']));
+
+    $sql = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
+    $data = mysqli_fetch_assoc($sql);
+
+    if (mysqli_affected_rows($conn) > 0) {
+
+        if (password_verify($password, $data['password'])) {
+            $_SESSION['username'] = $data['username'];
+            header("location:index.php");
+        } else {
+            $err = "Incorrect password";
+        }
+    } else {
+        $err = "User not found";
+    }
+}
 
 ?>
 
@@ -59,14 +74,24 @@ if (isset($_POST["login"])) {
                     <div class="card-body">
                         <h3 class="text-center">Login</h3>
                         <hr>
-                        <form action="POST">
+                        <?php
+                        if (isset($err) || (isset($_SESSION['msg']) && $_SESSION['msg'] != '')) {
+                        ?>
+                            <div class="alert alert-<?= isset($err) ? 'danger' : 'success'; ?>" role="alert">
+                                <?= isset($err) ? $err : $_SESSION['msg']; ?>
+                            </div>
+                        <?php
+                            $_SESSION['msg'] = '';
+                        }
+
+                        ?>
+                        <form method="POST">
                             <label for="username">Username</label>
-                            <input type="text" class="form-control mb-3" id="username" name="username">
+                            <input type="text" class="form-control mb-3" id="username" name="username" value="<?= $username; ?>" required>
                             <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
+                            <input type="password" class="form-control" id="password" name="password" value="<?= $password; ?>" required>
                             <div class="d-grid gap-2 mt-3">
-                                <!-- <input class="btn btn-primary" type="submit" value="submit" href="comments.php"> -->
-                                <a class="btn btn-primary" type="submit" value="submit" href="comments.php">Submit</a>
+                                <input class="btn btn-primary" type="submit" value="submit" name="submit">
                                 <a href="registration.php" class="btn btn-secondary">Register</a>
                             </div>
                         </form>
